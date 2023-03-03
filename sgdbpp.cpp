@@ -1,16 +1,18 @@
 //
 //  Criado por Santiago Becerra em 15/9/19.
 //  Copyright © 2019 Santiago Becerra. All rights reserved.
+//  Link: https://towardsdatascience.com/simple-neural-network-implementation-in-c-663f51447547
 //
-//  Traduzido por Patryck Adrien em 23/02/23.
+//  Aptado e modificado por Patryck Adrien.
 //
 
 #include <iostream>
 #include <list>
 #include <cstdlib>
 #include <math.h>
+#include <time.h>
 
-// Rede Neural para aprendizado das portas lógicas XOR
+// Rede Neural para aprfimizado das portas lógicas XOR
 // Características : função de ativacao sigmoid, descida de gradiente estocástico (SGD) 
 // e método de erro quadrático médio (MSE) para cálculo do erro
 
@@ -42,6 +44,10 @@ void embaralhar(int *array, size_t n)
 }
 
 int main(int argc, const char * argv[]) {
+
+    double tempo_gasto = 0.;
+ 
+    clock_t inicio = clock();
 
     static const int numEntradas = 2;
     static const int numNosOcultos = 2;
@@ -97,7 +103,7 @@ int main(int argc, const char * argv[]) {
             for (int j=0; j<numNosOcultos; j++) {
                 double ativacao=camadasOcultasBias[j];
                  for (int k=0; k<numEntradas; k++) {
-                    ativacao+=entrada_treinamento[i][k]*pesosOcultos[k][j]; // para otimizar tranponhe a matriz pesos
+                    ativacao+=entrada_treinamento[i][k]*pesosOcultos[k][j]; // para otimizar transponhe a matriz pesos
                 }
                 camadasOcultas[j] = sigmoid(ativacao);
             }
@@ -105,12 +111,12 @@ int main(int argc, const char * argv[]) {
             for (int j=0; j<numSaidas; j++) {
                 double ativacao=camadaSaidaBias[j];
                 for (int k=0; k<numNosOcultos; k++) {
-                    ativacao+=camadasOcultas[k]*pesosSaida[k][j]; // para otimizar tranponhe a matriz pesos
+                    ativacao+=camadasOcultas[k]*pesosSaida[k][j]; // para otimizar transponhe a matriz pesos
                 }
                 camadaSaida[j] = sigmoid(ativacao);
             }
             
-            std::cout << "Entrada:" << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1] << "    Saída:" << camadaSaida[0] << "    Saída Esperada: " << saida_treinamento[i][0] << "\n";
+            //std::cout << "Entrada:" << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1] << "    Saída:" << camadaSaida[0] << "    Saída Esperada: " << saida_treinamento[i][0] << "\n";
             
             // Retropropagação (Backpropagation)
             
@@ -144,9 +150,13 @@ int main(int argc, const char * argv[]) {
             }
         }
     }
-    
+
+    for(int i=0; i<4; i++){
+        std::cout << "Entrada:" << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1] << "    Saída:" << camadaSaida[i] << "    Saída Esperada: " << saida_treinamento[i][0] << "\n";
+    }
+
     // Print dos pesos
-    std::cout << "Pesos Ocultos Finais\n[ ";
+    std::cout << "\nPesos Ocultos Finais\n[ ";
     for (int j=0; j<numNosOcultos; j++) {
         std::cout << "[ ";
         for(int k=0; k<numEntradas; k++) {
@@ -156,7 +166,7 @@ int main(int argc, const char * argv[]) {
     }
     std::cout << "]\n";
     
-    std::cout << "Bias Ocultos Finais\n[ ";
+    std::cout << "Bías Ocultos Finais\n[ ";
     for (int j=0; j<numNosOcultos; j++) {
         std::cout << camadasOcultasBias[j] << " ";
 
@@ -170,12 +180,20 @@ int main(int argc, const char * argv[]) {
         }
         std::cout << "]\n";
     }
-    std::cout << "Bias de Saída Finais\n[ ";
+    std::cout << "Bías de Saída Finais\n[ ";
     for (int j=0; j<numSaidas; j++) {
         std::cout << camadaSaidaBias[j] << " ";
         
     }
     std::cout << "]\n";
+
+    clock_t fim = clock();
+
+    // calcula o tempo decorrido encontrando a diferença (fim - inicio) e
+    // dividindo a diferença por CLOCKS_PER_SEC para converter em segundos
+    tempo_gasto += (double)(fim - inicio) / CLOCKS_PER_SEC;
+ 
+    std::cout << "\nTempo Gasto: " << tempo_gasto << " segundos";
 
     return 0;
 }
