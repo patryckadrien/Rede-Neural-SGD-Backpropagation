@@ -52,7 +52,7 @@ int main(int argc, const char * argv[]) {
     static const int numEntradas = 2;
     static const int numNosOcultos = 2;
     static const int numSaidas = 1;
-    static const int epocas = 1e5;
+    static const int epocas = 1e4;
     
     const double lr = 0.1;
     
@@ -93,7 +93,7 @@ int main(int argc, const char * argv[]) {
     int OrdemSetTreinamento[] = {0,1,2,3};
     
     for (int n=0; n<epocas; n++) {
-        embaralhar(OrdemSetTreinamento, numSetTreinamento);
+        //embaralhar(OrdemSetTreinamento, numSetTreinamento);
         for (int x=0; x<numSetTreinamento; x++) {
             
             int i = OrdemSetTreinamento[x];
@@ -116,8 +116,8 @@ int main(int argc, const char * argv[]) {
                 camadaSaida[j] = sigmoid(ativacao);
             }
             
-            //std::cout << "Entrada:" << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1] << "    Saída:" << camadaSaida[0] << "    Saída Esperada: " << saida_treinamento[i][0] << "\n";
-            
+            std::cout << "Entrada: " << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1] << "\tSaída:\t" << camadaSaida[0] << "\tSaída Esperada:\t" << saida_treinamento[i][0] << "\n";
+        
             // Retropropagação (Backpropagation)
             
             double deltaSaida[numSaidas];
@@ -151,9 +151,9 @@ int main(int argc, const char * argv[]) {
         }
     }
 
-    for(int i=0; i<4; i++){
-        std::cout << "Entrada:" << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1] << "    Saída:" << camadaSaida[i] << "    Saída Esperada: " << saida_treinamento[i][0] << "\n";
-    }
+    // for(int i=0; i<4; i++){
+    //     std::cout << "Entrada: " << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1] << "\tSaída:\t" << camadaSaida[i] << "\tSaída Esperada:\t" << saida_treinamento[i][0] << "\n";
+    // }
 
     // Print dos pesos
     std::cout << "\nPesos Ocultos Finais\n[ ";
@@ -193,7 +193,7 @@ int main(int argc, const char * argv[]) {
     // dividindo a diferença por CLOCKS_PER_SEC para converter em segundos
     tempo_gasto += (double)(fim - inicio) / CLOCKS_PER_SEC;
  
-    std::cout << "\nTempo Gasto: " << tempo_gasto << " segundos";
+    std::cout << "\nTempo Gasto: " << tempo_gasto << " segundos.\n";
 
     return 0;
 }
