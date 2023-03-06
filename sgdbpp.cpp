@@ -115,16 +115,19 @@ int main(int argc, const char * argv[]) {
                 }
                 camadaSaida[j] = sigmoid(ativacao);
             }
-            
-            std::cout << "Entrada: " << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1] << "\tSaída:\t" << camadaSaida[0] << "\tSaída Esperada:\t" << saida_treinamento[i][0] << "\n";
         
             // Retropropagação (Backpropagation)
             
             double deltaSaida[numSaidas];
+            double ErroSaida; 
             for (int j=0; j<numSaidas; j++) { 
-                double ErroSaida = (saida_treinamento[i][j]-camadaSaida[j]);
+                ErroSaida = (saida_treinamento[i][j]-camadaSaida[j]);
                 deltaSaida[j] = ErroSaida*derivada_sigmoid(camadaSaida[j]);
             }
+
+            std::cout << "Entrada: " << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1];
+            std::cout << "\tSaída:\t" << camadaSaida[0] << "\tSaída Esperada:\t" << saida_treinamento[i][0];
+            std::cout << "\tErro:\t" << ErroSaida << "\n";
             
             double deltaOculto[numNosOcultos];
             for (int j=0; j<numNosOcultos; j++) {
