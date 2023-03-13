@@ -35,11 +35,11 @@ int main(int argc, const char * argv[]) {
     //clock_t inicio = clock();
 
     static const int numEntradas = 2;
-    static const int numNosOcultos = 3;
+    static const int numNosOcultos = 10;
     static const int numSaidas = 1;
-    static const int epocas = 1e5;
+    static const int epocas = 8e4;
     
-    const double lr = 0.2;
+    const double lr = 0.4;
     
     double camadasOcultas[numNosOcultos];
     double camadaSaida[numSaidas];
