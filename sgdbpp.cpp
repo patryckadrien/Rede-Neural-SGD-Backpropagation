@@ -34,7 +34,7 @@ int main(int argc, const char * argv[]) {
  
     //clock_t inicio = clock();
 
-    static const int numEntradas = 2;
+    static const int numEntradas = 3;
     static const int numNosOcultos = 10;
     static const int numSaidas = 1;
     static const int epocas = 8e4;
@@ -50,14 +50,23 @@ int main(int argc, const char * argv[]) {
     double pesosOcultos[numEntradas][numNosOcultos];
     double pesosSaida[numNosOcultos][numSaidas];
     
-    static const int numSetTreinamento = 4;
+    static const int numSetTreinamento = 6;
+    static const int numSetValidacao = 2;
 
     double entrada_treinamento[numSetTreinamento][numEntradas] = { 
-        {0.,0.},{1.,0.},{0.,1.},{1.,1.} 
+        {0.,0.,0.},{0.,0.,1.},{0.,1.,0.},{0.,1.,1.},{1.,0.,0.},{1.,0.,1.}
+    };
+
+    double entrada_validacao[numSetValidacao][numEntradas] = { 
+        {1.,1.,0.},{1.,1.,1.}
     };
 
     double saida_treinamento[numSetTreinamento][numSaidas] = { 
-        {0.},{1.},{1.},{0.} 
+        {0.},{1.},{1.},{0.},{1.},{0.}
+    };
+
+    double saida_validacao[numSetValidacao][numSaidas] = { 
+        {0.},{1.}
     };
     
     for (int i=0; i<numEntradas; i++) {
@@ -75,19 +84,14 @@ int main(int argc, const char * argv[]) {
         camadaSaidaBias[i] = inicia_pesos();
     }
     
-    int OrdemSetTreinamento[] = {0,1,2,3};
-    
     for (int n=0; n<epocas; n++) {
         for (int x=0; x<numSetTreinamento; x++) {
-            
-            int i = OrdemSetTreinamento[x];
-            
             // Propagação para frente (Forward)
             
             for (int j=0; j<numNosOcultos; j++) {
                 double ativacao=camadasOcultasBias[j];
                  for (int k=0; k<numEntradas; k++) {
-                    ativacao+=entrada_treinamento[i][k]*pesosOcultos[k][j]; // para otimizar transponhe a matriz pesos
+                    ativacao+=entrada_treinamento[x][k]*pesosOcultos[k][j]; // para otimizar transponhe a matriz pesos
                 }
                 camadasOcultas[j] = sigmoid(ativacao);
             }
@@ -99,19 +103,19 @@ int main(int argc, const char * argv[]) {
                 }
                 camadaSaida[j] = sigmoid(ativacao);
             }
+
+            std::cout << "Entrada: " << entrada_treinamento[x][0] << " " << entrada_treinamento[x][1] << " " << entrada_treinamento[x][2];
+            std::cout << "\tSaída:\t" << camadaSaida[0] << "\tSaída Esperada:\t" << saida_treinamento[x][0];
+            std::cout << "\n";
         
             // Retropropagação (Backpropagation)
             
             double deltaSaida[numSaidas];
             double ErroSaida; 
             for (int j=0; j<numSaidas; j++) { 
-                ErroSaida = (saida_treinamento[i][j]-camadaSaida[j]);
+                ErroSaida = (saida_treinamento[x][j]-camadaSaida[j]);
                 deltaSaida[j] = ErroSaida*derivada_sigmoid(camadaSaida[j]);
             }
-
-            std::cout << "Entrada: " << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1];
-            std::cout << "\tSaída:\t" << camadaSaida[0] << "\tSaída Esperada:\t" << saida_treinamento[i][0];
-            std::cout << "\n";
             
             double deltaOculto[numNosOcultos];
             for (int j=0; j<numNosOcultos; j++) {
@@ -132,15 +136,11 @@ int main(int argc, const char * argv[]) {
             for (int j=0; j<numNosOcultos; j++) {
                 camadasOcultasBias[j] += deltaOculto[j]*lr;
                 for(int k=0; k<numEntradas; k++) {
-                    pesosOcultos[k][j]+=entrada_treinamento[i][k]*deltaOculto[j]*lr;
+                    pesosOcultos[k][j]+=entrada_treinamento[x][k]*deltaOculto[j]*lr;
                 }
             }
         }
     }
-
-    // for(int i=0; i<4; i++){
-    //     std::cout << "Entrada: " << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1] << "\tSaída:\t" << camadaSaida[i] << "\tSaída Esperada:\t" << saida_treinamento[i][0] << "\n";
-    // }
 
     // Print dos pesos
     std::cout << "\nPesos Ocultos Finais\n[ ";
@@ -173,6 +173,30 @@ int main(int argc, const char * argv[]) {
         
     }
     std::cout << "]\n";
+
+    std::cout << "\nValidação\n\n";
+
+    for (int x=0; x<numSetValidacao; x++) {
+        for (int j=0; j<numNosOcultos; j++) {
+            double ativacao=camadasOcultasBias[j];
+            for (int k=0; k<numEntradas; k++) {
+                ativacao+=entrada_validacao[x][k]*pesosOcultos[k][j]; // para otimizar transponhe a matriz pesos
+            }
+            camadasOcultas[j] = sigmoid(ativacao);
+        }
+                
+        for (int j=0; j<numSaidas; j++) {
+            double ativacao=camadaSaidaBias[j];
+            for (int k=0; k<numNosOcultos; k++) {
+                ativacao+=camadasOcultas[k]*pesosSaida[k][j]; // para otimizar transponhe a matriz pesos
+            }
+            camadaSaida[j] = sigmoid(ativacao);
+        }
+        
+        std::cout << "Entrada: " << entrada_validacao[x][0] << " " << entrada_validacao[x][1] << " " << entrada_validacao[x][2];
+        std::cout << "\tSaída:\t" << camadaSaida[0] << "\tSaída Esperada:\t" << saida_validacao[x][0];
+        std::cout << "\n";
+    }
 
     //clock_t fim = clock();
 

@@ -15,4 +15,4 @@ sgdbpp: $(OBJ)
 .PHONY:clean
 
 clean:
-	rm sgdbpp *.out  *.o
+	rm sgdbpp *.o
