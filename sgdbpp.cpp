@@ -1,5 +1,5 @@
 //
-//  Criado por Santiago Becerra em 15/9/19.
+//  Criado por Santiago Becerra em 15/09/19.
 //  Copyright © 2019 Santiago Becerra. All rights reserved.
 //  Link: https://towardsdatascience.com/simple-neural-network-implementation-in-c-663f51447547
 //
@@ -28,33 +28,18 @@ double inicia_pesos() {
     return ((double)rand())/((double)RAND_MAX);
 }
 
-void embaralhar(int *array, size_t n)
-{
-    if (n > 1)
-    {
-        size_t i;
-        for (i = 0; i < n - 1; i++)
-        {
-            size_t j = i + rand() / (RAND_MAX / (n - i) + 1);
-            int t = array[j];
-            array[j] = array[i];
-            array[i] = t;
-        }
-    }
-}
-
 int main(int argc, const char * argv[]) {
 
-    double tempo_gasto = 0.;
+    //double tempo_gasto = 0.;
  
-    clock_t inicio = clock();
+    //clock_t inicio = clock();
 
     static const int numEntradas = 2;
-    static const int numNosOcultos = 2;
+    static const int numNosOcultos = 3;
     static const int numSaidas = 1;
-    static const int epocas = 1e4;
+    static const int epocas = 1e5;
     
-    const double lr = 0.1;
+    const double lr = 0.2;
     
     double camadasOcultas[numNosOcultos];
     double camadaSaida[numSaidas];
@@ -93,7 +78,6 @@ int main(int argc, const char * argv[]) {
     int OrdemSetTreinamento[] = {0,1,2,3};
     
     for (int n=0; n<epocas; n++) {
-        //embaralhar(OrdemSetTreinamento, numSetTreinamento);
         for (int x=0; x<numSetTreinamento; x++) {
             
             int i = OrdemSetTreinamento[x];
@@ -127,7 +111,7 @@ int main(int argc, const char * argv[]) {
 
             std::cout << "Entrada: " << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1];
             std::cout << "\tSaída:\t" << camadaSaida[0] << "\tSaída Esperada:\t" << saida_treinamento[i][0];
-            std::cout << "\tErro:\t" << ErroSaida << "\n";
+            std::cout << "\n";
             
             double deltaOculto[numNosOcultos];
             for (int j=0; j<numNosOcultos; j++) {
@@ -190,13 +174,13 @@ int main(int argc, const char * argv[]) {
     }
     std::cout << "]\n";
 
-    clock_t fim = clock();
+    //clock_t fim = clock();
 
     // calcula o tempo decorrido encontrando a diferença (fim - inicio) e
     // dividindo a diferença por CLOCKS_PER_SEC para converter em segundos
-    tempo_gasto += (double)(fim - inicio) / CLOCKS_PER_SEC;
+    //tempo_gasto += (double)(fim - inicio) / CLOCKS_PER_SEC;
  
-    std::cout << "\nTempo Gasto: " << tempo_gasto << " segundos.\n";
+    //std::cout << "\nTempo Gasto: " << tempo_gasto << " segundos.\n";
 
     return 0;
 }
