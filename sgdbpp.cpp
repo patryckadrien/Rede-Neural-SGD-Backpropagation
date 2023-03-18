@@ -25,7 +25,7 @@ double derivada_sigmoid(double x) {
 }
 
 double inicia_pesos() { 
-    return ((double)rand())/((double)RAND_MAX);
+    return ((rand() % 10000000) / 10000000.)*(0.5);
 }
 
 void embaralhar(int *array, size_t n)
@@ -52,7 +52,7 @@ int main(int argc, const char * argv[]) {
     static const int numEntradas = 3;
     static const int numNosOcultos = 10;
     static const int numSaidas = 1;
-    static const int epocas = 8e4;
+    static const int epocas = 9e4;
     
     const double lr = 0.4;
     
@@ -195,12 +195,14 @@ int main(int argc, const char * argv[]) {
     std::cout << "]\n";
 
     std::cout << "\nValidação\n\n";
+
+    int OrdemSetValidacao[] = {0,1,2};
     
-    embaralhar(OrdemSetTreinamento, numSetValidacao);
+    //embaralhar(OrdemSetValidacao, numSetValidacao);
     for (int x=0; x<numSetValidacao; x++) {
         // Propagação para frente (Forward)
 
-        int i = OrdemSetTreinamento[x];
+        int i = x; //OrdemSetValidacao[x];
 
         double ativacao=camadasOcultasBias[i];
         for (int k=0; k<numEntradas; k++) {
