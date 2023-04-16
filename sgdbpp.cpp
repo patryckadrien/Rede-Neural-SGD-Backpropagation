@@ -12,7 +12,7 @@
 #include <math.h>
 #include <time.h>
 
-// Rede Neural para aprfimizado das portas lógicas XOR
+// Rede Neural para aprendiizado das portas lógicas XOR
 // Características : função de ativacao sigmoid, descida de gradiente estocástico (SGD) 
 // e método de erro quadrático médio (MSE) para cálculo do erro
 
@@ -52,7 +52,7 @@ int main(int argc, const char * argv[]) {
     static const int numEntradas = 3;
     static const int numNosOcultos = 10;
     static const int numSaidas = 1;
-    static const int epocas = 9e4;
+    static const int epocas = 8e4;
     
     const double lr = 0.4;
     
@@ -124,10 +124,6 @@ int main(int argc, const char * argv[]) {
                 camadaSaida[j] = sigmoid(ativacao);
             }
 
-            std::cout << "Entrada: " << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1] << " " << entrada_treinamento[i][2];
-            std::cout << "\tSaída:\t" << camadaSaida[0] << "\tSaída Esperada:\t" << saida_treinamento[i][0];
-            std::cout << "\n";
-        
             // Retropropagação (Backpropagation)
             
             double deltaSaida[numSaidas];
@@ -136,6 +132,10 @@ int main(int argc, const char * argv[]) {
                 ErroSaida = (saida_treinamento[i][j]-camadaSaida[j]);
                 deltaSaida[j] = ErroSaida*derivada_sigmoid(camadaSaida[j]);
             }
+
+            std::cout << "Entrada: " << entrada_treinamento[i][0] << " " << entrada_treinamento[i][1] << " " << entrada_treinamento[i][2];
+            std::cout << "\tSaída:\t" << camadaSaida[0] << "\tSaída Esperada:\t" << saida_treinamento[i][0];
+            std::cout /*<< "\tDelta de Saída:\t" << deltaSaida[0]*/ << "\n";
             
             double deltaOculto[numNosOcultos];
             for (int j=0; j<numNosOcultos; j++) {
